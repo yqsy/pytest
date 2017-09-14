@@ -31,8 +31,15 @@ def i():
     raise Exception('exception has happen')
 
 
+
 if __name__ == '__main__':
     hello()
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
 
     logging.debug('Information during calling f()')
 
