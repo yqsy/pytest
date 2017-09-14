@@ -13,20 +13,22 @@ logging.basicConfig(
     format='%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s',
 )
 
+logger = logging.getLogger(__name__)
+
 def f():
-    logging.info('calling method g() in f()')
+    logger.info('calling method g() in f()')
     return g()
 
 def g():
-    logging.info('calling method h() in g()')
+    logger.info('calling method h() in g()')
     return h()
 
 def h():
-    logging.info('calling method i() in h()')
+    logger.info('calling method i() in h()')
     return i()
 
 def i():
-    logging.info('append element i to gList in i()')
+    logger.info('append element i to gList in i()')
 
     raise Exception('exception has happen')
 
@@ -39,14 +41,14 @@ if __name__ == '__main__':
     console.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s')
     console.setFormatter(formatter)
-    logging.getLogger('').addHandler(console)
+    logger.addHandler(console)
 
-    logging.debug('Information during calling f()')
+    logger.debug('Information during calling f()')
 
     try:
         f()
     except Exception as ex:
         ty,tv,tb = sys.exc_info()
-        logging.critical('{} {}'.format(ty,tv))
-        logging.critical((traceback.format_tb(tb)))
+        logger.critical('{} {}'.format(ty,tv))
+        logger.critical((traceback.format_tb(tb)))
         sys.exit(1)
