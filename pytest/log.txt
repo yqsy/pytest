@@ -1,0 +1,1 @@
+2017-09-14 21:51:42,769 13376 DEBUG pytest.py:18 Information during calling f()
