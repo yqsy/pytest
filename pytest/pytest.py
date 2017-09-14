@@ -41,5 +41,5 @@ if __name__ == '__main__':
     except Exception as ex:
         ty,tv,tb = sys.exc_info()
         logging.critical('{} {}'.format(ty,tv))
-        logging.critical(''.join(traceback.format_tb(tb)))
+        logging.critical((traceback.format_tb(tb)))
         sys.exit(1)
