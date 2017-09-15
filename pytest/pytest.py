@@ -7,10 +7,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 
 from pytest.common import hello
 
+
+format_str='%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s'
+
 logging.basicConfig(
     level=logging.DEBUG,
     handlers=[logging.FileHandler('log.txt', 'w', 'utf-8')],
-    format='%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s',
+    format=format_str,
 )
 
 logger = logging.getLogger(__name__)
@@ -39,7 +42,7 @@ if __name__ == '__main__':
 
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s')
+    formatter = logging.Formatter(format_str)
     console.setFormatter(formatter)
     logger.addHandler(console)
 
