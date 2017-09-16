@@ -131,7 +131,7 @@ class LogDialog(QDialog):
     def generate_log(self):
         logger.debug('log')
 
-    def create_thread(selfs):
+    def create_thread(self):
         class MyLog(QRunnable):
             def run(self):
                 for i in range(3):
@@ -140,7 +140,8 @@ class LogDialog(QDialog):
 
                 0 / 0
 
-        QThreadPool.globalInstance().start(MyLog())
+        threadpool = QThreadPool(self)
+        threadpool.start(MyLog())
 
     @pyqtSlot(str)
     def add_log(self, msg):
