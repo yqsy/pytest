@@ -118,9 +118,11 @@ class LogDialog(QDialog):
     def create_thread(selfs):
         class MyLog(QRunnable):
             def run(self):
-                for i in range(10):
+                for i in range(3):
                     logger.debug(i)
                     time.sleep(0.5)
+
+                0 / 0
 
         QThreadPool.globalInstance().start(MyLog())
 
