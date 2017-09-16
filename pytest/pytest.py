@@ -16,7 +16,6 @@ FORMAT = '%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message
 logging.basicConfig(
     level=logging.DEBUG,
     handlers=[],
-    format=FORMAT,
 )
 
 logger = logging.getLogger(__name__)
