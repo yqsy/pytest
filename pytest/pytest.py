@@ -129,11 +129,14 @@ class LogDialog(QDialog):
     def add_log(self, msg):
         self.edit.append(msg)
 
-class ExceptionHandler():
-    def handler(self,etype, value, tb):
-        logger.error('{} {} {}'.format(etype, value, traceback.format_tb(tb)))
+class ExceptionHandler(QObject):
+    exception_signal = pyqtSignal(str)
 
-        #TODO emit connect 到出错窗口,send email
+    def handler(self,etype, value, tb):
+        err_str = '{} {} {}'.format(etype, value, traceback.format_tb(tb))
+        logger.error(err_str)
+
+        self.exception_signal.emit(err_str)
 
 if __name__ == '__main__':
     # 设置异常回调
