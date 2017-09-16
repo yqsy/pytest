@@ -138,6 +138,38 @@ class ExceptionHandler(QObject):
 
         self.exception_signal.emit(err_str)
 
+class ErrorHandleDialog(QDialog):
+    def __init__(self):
+        super(ErrorHandleDialog, self).__init__()
+        self.init_ui()
+
+    def init_ui(self):
+        self.front_box = QVBoxLayout(self)
+        self.setLayout(self.front_box)
+        self.hbox = QHBoxLayout(self)
+        self.hbox2 = QHBoxLayout(self)
+
+        self.front_box.addLayout(self.hbox)
+        self.front_box.addLayout(self.hbox2)
+
+        self.hbox2.setAlignment(Qt.AlignRight)
+
+        self.error_edit = QTextEdit(self)
+        self.hbox.addWidget(self.error_edit)
+
+        self.send_email_button = QPushButton('send mail', self)
+        self.hbox2.addWidget(self.send_email_button)
+
+        self.setWindowTitle('发生了一个没有预料到的异常')
+
+
+
+    @pyqtSlot(str)
+    def error_handle(self, err):
+        self.error_edit.setText(err)
+        self.exec_()
+
+
 if __name__ == '__main__':
     # 设置异常回调
     exception_handler = ExceptionHandler()
@@ -164,6 +196,11 @@ if __name__ == '__main__':
 
     # 链接槽
     dialog_handler.log_signal.update_signal.connect(log_dialog.add_log)
+
+    # 错误提示/发送邮件窗口
+    error_handle_dialog = ErrorHandleDialog()
+    exception_handler.exception_signal.connect(error_handle_dialog.error_handle)
+
 
     log_dialog.show()
     sys.exit(app.exec_())
