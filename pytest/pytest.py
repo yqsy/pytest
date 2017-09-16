@@ -119,8 +119,15 @@ class LogDialog(QDialog):
         self.button4.clicked.connect(self.errors)
         self.qv_box_layout.addWidget(self.button4)
 
+        self.button5 = QPushButton('清空', self)
+        self.button5.clicked.connect(self.clean_text)
+        self.qv_box_layout.addWidget(self.button5)
+
         self.layout.addLayout(self.qh_box_layout)
         self.layout.addLayout(self.qv_box_layout)
+
+    def clean_text(self):
+        self.edit.clear()
 
     def errors(self):
         f()
