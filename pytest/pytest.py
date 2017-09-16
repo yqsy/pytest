@@ -1,3 +1,8 @@
+"""
+日志记录到console,前台的展示
+发生异常时呼出qt窗口提示,并记录日志
+"""
+
 import sys
 import os
 import logging
