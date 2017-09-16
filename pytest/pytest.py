@@ -148,8 +148,8 @@ class LogDialog(QDialog):
 
 
 class ErrorHandleDialog(QDialog):
-    def __init__(self):
-        super(ErrorHandleDialog, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(ErrorHandleDialog, self).__init__(*args, **kwargs)
         self.init_ui()
 
     def init_ui(self):
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     dialog_handler.log_signal.update_signal.connect(log_dialog.add_log)
 
     # 错误提示/发送邮件窗口
-    error_handle_dialog = ErrorHandleDialog()
+    error_handle_dialog = ErrorHandleDialog(log_dialog)
     exception_handler.log_signal.update_signal.connect(error_handle_dialog.error_handle)
 
     log_dialog.show()
