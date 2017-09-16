@@ -11,12 +11,12 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 
 from pytest.common import hello
 
-format_str = '%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s'
+FORMAT = '%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s'
 
 logging.basicConfig(
     level=logging.DEBUG,
     handlers=[],
-    format=format_str,
+    format=FORMAT,
 )
 
 logger = logging.getLogger(__name__)
@@ -122,13 +122,13 @@ if __name__ == '__main__':
     # 设置窗口作为输出handler
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
-    console.setFormatter(logging.Formatter(format_str))
+    console.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(console)
 
     # 设置监控窗体作为输出handler
     dialog_handler = DialogHandler()
     dialog_handler.setLevel(logging.DEBUG)
-    dialog_handler.setFormatter(logging.Formatter(format_str))
+    dialog_handler.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(dialog_handler)
 
     # 开启窗口输出日志
