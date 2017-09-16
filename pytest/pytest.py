@@ -120,7 +120,7 @@ class LogDialog(QDialog):
             def run(self):
                 for i in range(10):
                     logger.debug(i)
-                    time.sleep(1)
+                    time.sleep(0.5)
 
         QThreadPool.globalInstance().start(MyLog())
 
@@ -133,6 +133,7 @@ class ExceptionHandler():
     def handler(self,etype, value, tb):
         logger.error('{} {} {}'.format(etype, value, traceback.format_tb(tb)))
 
+        #TODO emit connect 到出错窗口,send email
 
 if __name__ == '__main__':
     # 设置异常回调
