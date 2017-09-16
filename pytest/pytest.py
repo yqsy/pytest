@@ -15,7 +15,7 @@ format_str = '%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(mes
 
 logging.basicConfig(
     level=logging.DEBUG,
-    handlers=[logging.FileHandler('log.txt', 'w', 'utf-8')],
+    handlers=[],
     format=format_str,
 )
 
