@@ -138,6 +138,7 @@ class ExceptionHandler(QObject):
         err_str = '{} {} {}'.format(etype, value, traceback.format_tb(tb))
         logger.error(err_str)
 
+        # TODO: 改造到handler里,ERROR以上级别同一报错,发邮件
         self.exception_signal.emit(err_str)
 
 
