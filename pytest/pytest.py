@@ -95,9 +95,22 @@ class LogDialog(QDialog):
         self.button2.clicked.connect(self.create_thread)
         self.qv_box_layout.addWidget(self.button2)
 
+        self.button3 = QPushButton('除零', self)
+        self.button3.clicked.connect(self.division)
+        self.qv_box_layout.addWidget(self.button3)
+
+        self.button4 = QPushButton('长串异常', self)
+        self.button4.clicked.connect(self.errors)
+        self.qv_box_layout.addWidget(self.button4)
+
         self.layout.addLayout(self.qh_box_layout)
         self.layout.addLayout(self.qv_box_layout)
 
+    def errors(self):
+        f()
+
+    def division(self):
+        0 / 0
 
     def generate_log(self):
         logger.debug('log')
@@ -116,9 +129,15 @@ class LogDialog(QDialog):
     def add_log(self, msg):
         self.edit.append(msg)
 
+class ExceptionHandler():
+    def handler(self,etype, value, tb):
+        logger.error('{} {} {}'.format(etype, value, traceback.format_tb(tb)))
+
+
 if __name__ == '__main__':
     # 设置异常回调
-    sys.excepthook = traceback.print_exception
+    exception_handler = ExceptionHandler()
+    sys.excepthook = exception_handler.handler
 
     # 测试模块输出
     hello()
@@ -145,11 +164,3 @@ if __name__ == '__main__':
     log_dialog.show()
     sys.exit(app.exec_())
 
-    # logger.debug('Information during calling f()')
-    # try:
-    #     f()
-    # except Exception as ex:
-    #     ty, tv, tb = sys.exc_info()
-    #     logger.critical('{} {}'.format(ty, tv))
-    #     logger.critical((traceback.format_tb(tb)))
-    #     sys.exit(1)
