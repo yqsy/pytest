@@ -92,15 +92,15 @@ class LogDialog(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        self.layout = QHBoxLayout(self)
+        self.layout = QHBoxLayout()
         self.setLayout(self.layout)
 
-        self.qh_box_layout = QHBoxLayout(self)
+        self.qh_box_layout = QHBoxLayout()
         self.edit = QTextEdit(self)
         self.edit.setMinimumWidth(500)
         self.qh_box_layout.addWidget(self.edit)
 
-        self.qv_box_layout = QVBoxLayout(self)
+        self.qv_box_layout = QVBoxLayout()
         self.qv_box_layout.setAlignment(Qt.AlignTop)
 
         self.button = QPushButton('日志', self)
@@ -155,10 +155,10 @@ class ErrorHandleDialog(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        self.front_box = QVBoxLayout(self)
+        self.front_box = QVBoxLayout()
         self.setLayout(self.front_box)
-        self.hbox = QHBoxLayout(self)
-        self.hbox2 = QHBoxLayout(self)
+        self.hbox = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
 
         self.front_box.addLayout(self.hbox)
         self.front_box.addLayout(self.hbox2)
