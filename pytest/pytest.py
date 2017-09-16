@@ -58,11 +58,11 @@ class DialogHandler(logging.StreamHandler):
     """
     提供qt窗口日志信息支持,当产生日志时,触发signal
     """
+
     def __init__(self):
         super(DialogHandler, self).__init__()
 
         self.log_signal = LogSignal()
-
 
     def emit(self, record):
         formated = self.format(record)
@@ -124,19 +124,20 @@ class LogDialog(QDialog):
 
         QThreadPool.globalInstance().start(MyLog())
 
-
     @pyqtSlot(str)
     def add_log(self, msg):
         self.edit.append(msg)
 
+
 class ExceptionHandler(QObject):
     exception_signal = pyqtSignal(str)
 
-    def handler(self,etype, value, tb):
+    def handler(self, etype, value, tb):
         err_str = '{} {} {}'.format(etype, value, traceback.format_tb(tb))
         logger.error(err_str)
 
         self.exception_signal.emit(err_str)
+
 
 class ErrorHandleDialog(QDialog):
     def __init__(self):
@@ -161,8 +162,6 @@ class ErrorHandleDialog(QDialog):
         self.hbox2.addWidget(self.send_email_button)
 
         self.setWindowTitle('发生了一个没有预料到的异常')
-
-
 
     @pyqtSlot(str)
     def error_handle(self, err):
@@ -201,7 +200,5 @@ if __name__ == '__main__':
     error_handle_dialog = ErrorHandleDialog()
     exception_handler.exception_signal.connect(error_handle_dialog.error_handle)
 
-
     log_dialog.show()
     sys.exit(app.exec_())
-
