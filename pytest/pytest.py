@@ -211,10 +211,10 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     log_dialog = LogDialog()
 
-    # 链接槽
+    # 连接到消息控制台的日志增加槽函数
     dialog_handler.log_signal.update_signal.connect(log_dialog.add_log)
 
-    # 错误提示/发送邮件窗口
+    # 连接到错误提示/发送邮件窗口的提示槽函数(exec_)
     error_handle_dialog = ErrorHandleDialog(log_dialog)
     exception_handler.log_signal.update_signal.connect(error_handle_dialog.error_handle)
 
