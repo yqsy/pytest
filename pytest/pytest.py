@@ -61,13 +61,29 @@ class DialogHandler(logging.StreamHandler):
 
     def __init__(self):
         super(DialogHandler, self).__init__()
-
         self.log_signal = LogSignal()
 
     def emit(self, record):
         formated = self.format(record)
-
         self.log_signal.update_signal.emit(formated)
+
+
+class ExceptionHandler(logging.StreamHandler):
+    """
+    提供qt错误窗口信息支持,当产生ERROR日志信息时,触发signal
+    """
+
+    def __init__(self):
+        super(ExceptionHandler, self).__init__()
+        self.log_signal = LogSignal()
+
+    def emit(self, record):
+        formated = self.format(record)
+        self.log_signal.update_signal.emit(formated)
+
+    def handler(self, etype, value, tb):
+        err_str = '{} {} {}'.format(etype, value, traceback.format_tb(tb))
+        logger.error(err_str)
 
 
 class LogDialog(QDialog):
@@ -131,17 +147,6 @@ class LogDialog(QDialog):
         self.edit.append(msg)
 
 
-class ExceptionHandler(QObject):
-    exception_signal = pyqtSignal(str)
-
-    def handler(self, etype, value, tb):
-        err_str = '{} {} {}'.format(etype, value, traceback.format_tb(tb))
-        logger.error(err_str)
-
-        # TODO: 改造到handler里,ERROR以上级别同一报错,发邮件
-        self.exception_signal.emit(err_str)
-
-
 class ErrorHandleDialog(QDialog):
     def __init__(self):
         super(ErrorHandleDialog, self).__init__()
@@ -173,24 +178,32 @@ class ErrorHandleDialog(QDialog):
 
 
 if __name__ == '__main__':
-    # 设置异常回调
-    exception_handler = ExceptionHandler()
-    sys.excepthook = exception_handler.handler
+    # 设置异常回调(临时)
+    sys.excepthook = traceback.print_exception
 
     # 测试模块输出
     hello()
 
-    # 设置窗口作为输出handler
+    # 设置cmd窗口作为输出handler
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
     console.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(console)
 
-    # 设置监控窗体作为输出handler
+    # 设置消息控制台作为输出handler
     dialog_handler = DialogHandler()
     dialog_handler.setLevel(logging.DEBUG)
     dialog_handler.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(dialog_handler)
+
+    # 设置异常窗体(发送邮件)
+    exception_handler = ExceptionHandler()
+    exception_handler.setLevel(logging.ERROR)
+    exception_handler.setFormatter(logging.Formatter(FORMAT))
+    logger.addHandler(exception_handler)
+
+    # 重置异常回调
+    sys.excepthook = exception_handler.handler
 
     # 开启窗口输出日志
     app = QApplication(sys.argv)
@@ -201,7 +214,7 @@ if __name__ == '__main__':
 
     # 错误提示/发送邮件窗口
     error_handle_dialog = ErrorHandleDialog()
-    exception_handler.exception_signal.connect(error_handle_dialog.error_handle)
+    exception_handler.log_signal.update_signal.connect(error_handle_dialog.error_handle)
 
     log_dialog.show()
     sys.exit(app.exec_())
