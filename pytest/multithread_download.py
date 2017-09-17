@@ -23,7 +23,7 @@ class DownloadThread(threading.Thread):
             self.queue.task_done()
 
 
-class DownLoadTask():
+class DownloadTask():
     def __init__(self, *, begin, end, url, filename):
         self.begin = begin
         self.end = end
@@ -77,7 +77,7 @@ def main():
         t.start()
 
     for one_part in slice_rtn:
-        download_task = DownLoadTask(begin=one_part[0], end=one_part[1], url=DOWNLOAD_URL, filename=DWONLOAD_TO_FILE)
+        download_task = DownloadTask(begin=one_part[0], end=one_part[1], url=DOWNLOAD_URL, filename=DWONLOAD_TO_FILE)
         down_task_queue.put(download_task)
 
     down_task_queue.join()
