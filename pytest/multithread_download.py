@@ -10,17 +10,17 @@ DWONLOAD_TO_FILE = r'D:/reference/tmp/BaiduHi_setup.exe'
 
 
 class DownloadThread(threading.Thread):
-    def __init__(self, queue):
+    def __init__(self, download_task_queue):
         super(DownloadThread, self).__init__()
 
         # 多线程使用同一个queue,单生产者,多消费者
-        self.queue = queue
+        self.download_task_queue = download_task_queue
 
     def run(self):
         while True:
-            task = self.queue.get()
+            task = self.download_task_queue.get()
             task.run()
-            self.queue.task_done()
+            self.download_task_queue.task_done()
 
 
 class DownloadTask():
@@ -31,7 +31,7 @@ class DownloadTask():
         self.filename = filename
 
     def run(self):
-        #print('id:{} begin: {} end: {}'.format(threading.get_ident(), self.begin, self.end))
+        # print('id:{} begin: {} end: {}'.format(threading.get_ident(), self.begin, self.end))
 
         headers = {'Range': 'bytes={}-{}'.format(self.begin, self.end)}
 
