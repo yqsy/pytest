@@ -69,18 +69,18 @@ def main():
 
     print('write empty file successfully')
 
-    queue = Queue()
+    down_task_queue = Queue()
 
     for _ in range(THREAD_NUMS):
-        t = DownloadThread(queue)
+        t = DownloadThread(down_task_queue)
         t.setDaemon(True)
         t.start()
 
     for one_part in slice_rtn:
         download_task = DownLoadTask(begin=one_part[0], end=one_part[1], url=DOWNLOAD_URL, filename=DWONLOAD_TO_FILE)
-        queue.put(download_task)
+        down_task_queue.put(download_task)
 
-    queue.join()
+    down_task_queue.join()
 
 
 def slicing_file(sumbytes, part):
