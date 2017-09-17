@@ -76,9 +76,7 @@ def main():
         t.start()
 
     for one_part in slice_rtn:
-        begin = one_part[0]
-        end = one_part[1]
-        download_task = DownLoadTask(begin=begin, end=end, url=DOWNLOAD_URL, filename=DWONLOAD_TO_FILE)
+        download_task = DownLoadTask(begin=one_part[0], end=one_part[1], url=DOWNLOAD_URL, filename=DWONLOAD_TO_FILE)
         queue.put(download_task)
 
     queue.join()
