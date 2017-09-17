@@ -39,7 +39,8 @@ class DownLoadTask():
 
         with open(self.filename, 'r+b') as fp:
             fp.seek(self.begin)
-            fp.write(r.content)
+            for data in r.iter_content(chunk_size=4096):
+                fp.write(data)
 
 
 def sizeof_fmt(num, suffix='B'):
