@@ -79,8 +79,8 @@ class PrintThread(threading.Thread):
         print_msg = 'tid:{} {} [{}/{}] {}/s eta:{:.2f}s'.format(
             threadid,
             progress_bar,
-            sizeof_fmt(print_info.current),
-            sizeof_fmt(file_bytes),
+            sizeof_fmt(print_info.current + print_info.begin),
+            sizeof_fmt(print_info.end),
             sizeof_fmt(speed),
             remain_time)
 
