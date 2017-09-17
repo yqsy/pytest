@@ -8,6 +8,8 @@ DOWNLOAD_URL = r'http://sw.bos.baidu.com/sw-search-sp/software/0f1809fc9bd9d/Bai
 THREAD_NUMS = 5
 DWONLOAD_TO_FILE = r'D:/reference/tmp/BaiduHi_setup.exe'
 
+PRINT_INFO = namedtuple('PRINT_INFO', 'threadid begin end current')
+
 
 class DownloadThread(threading.Thread):
     def __init__(self, download_task_queue):
@@ -23,15 +25,30 @@ class DownloadThread(threading.Thread):
             self.download_task_queue.task_done()
 
 
+class PrintThread(threading.Thread):
+    def __init__(self, print_info_queue):
+        super(PrintThread, self).__init__()
+        self.print_info_queue = print_info_queue
+
+    def run(self):
+        while True:
+            print_info = self.print_info_queue.get()
+
+            print(print_info)
+
+            self.print_info_queue.task_done()
+
+
 class DownloadTask():
-    def __init__(self, *, begin, end, url, filename):
+    def __init__(self, *, begin, end, url, filename, print_info_queue):
         self.begin = begin
         self.end = end
         self.url = url
         self.filename = filename
+        self.print_info_queue = print_info_queue
 
     def run(self):
-        # print('id:{} begin: {} end: {}'.format(threading.get_ident(), self.begin, self.end))
+        print('id:{} begin: {} end: {}'.format(threading.get_ident(), self.begin, self.end))
 
         headers = {'Range': 'bytes={}-{}'.format(self.begin, self.end)}
 
@@ -39,8 +56,15 @@ class DownloadTask():
 
         with open(self.filename, 'r+b') as fp:
             fp.seek(self.begin)
+
+            current_bytes = 0
             for data in r.iter_content(chunk_size=4096):
                 fp.write(data)
+                current_bytes += len(data)
+
+                prinf_info = PRINT_INFO(threadid=threading.get_ident(), begin=self.begin,
+                                       end=self.end, current=current_bytes)
+                self.print_info_queue.put(prinf_info)
 
 
 def sizeof_fmt(num, suffix='B'):
@@ -76,11 +100,18 @@ def main():
         t.setDaemon(True)
         t.start()
 
+    print_info_queue = Queue()
+    print_thread = PrintThread(print_info_queue)
+    print_thread.setDaemon(True)
+    print_thread.start()
+
     for one_part in slice_rtn:
-        download_task = DownloadTask(begin=one_part[0], end=one_part[1], url=DOWNLOAD_URL, filename=DWONLOAD_TO_FILE)
+        download_task = DownloadTask(begin=one_part[0], end=one_part[1], url=DOWNLOAD_URL,
+                                     filename=DWONLOAD_TO_FILE, print_info_queue=print_info_queue)
         download_task_queue.put(download_task)
 
     download_task_queue.join()
+    print_info_queue.join()
 
 
 def slicing_file(sumbytes, part):
