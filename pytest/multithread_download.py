@@ -40,7 +40,6 @@ class DownLoadTask():
         with open(self.filename, 'r+b') as fp:
             fp.seek(self.begin)
             fp.write(r.content)
-            print('ok')
 
 
 def sizeof_fmt(num, suffix='B'):
@@ -63,8 +62,11 @@ def main():
     print(slice_rtn)
 
     # 占据一个空文件
+    print('begin to write an empty file')
     with open(DWONLOAD_TO_FILE, 'wb') as fp:
         fp.write(('\0' * file_size).encode())
+
+    print('write empty file successfully')
 
     queue = Queue()
 
