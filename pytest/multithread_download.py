@@ -56,14 +56,9 @@ class PrintThread(threading.Thread):
         :return:
         """
         self.msg_dict[begin] = msg
-
         sorted_msg_lst = sorted(self.msg_dict.values())
-
-        print_msg = '\r'
-
-        for value in sorted_msg_lst:
-            print_msg = print_msg + value + '\n'
-
+        print_msg = '\n'.join(sorted_msg_lst)
+        print_msg += '\n'
         return print_msg
 
     def generate_single_msg(self, print_info):
