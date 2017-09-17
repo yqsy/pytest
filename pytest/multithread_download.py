@@ -77,18 +77,17 @@ class PrintThread(threading.Thread):
         remain_bytes = file_bytes - print_info.current
         threadid = print_info.threadid
         download_time = datetime.now() - self.begin_time
-        speed = print_info.current / download_time.seconds if download_time.seconds != 0 else 0
-        remain_time = remain_bytes / speed if speed != 0 else 0
+        speed = int(print_info.current / download_time.seconds if download_time.seconds != 0 else 0.0)
+        remain_time = remain_bytes / speed if speed != 0 else 0.0
         progress_bar = self.generate_progress_bar(print_info.current / file_bytes)
 
-        print_msg = 'tid:{threadid} {progressbar} [{current}/{end}] {filesize} {speed}/s eta:{eta:.1f}s'.format(
-            threadid=threadid,
-            progressbar=progress_bar,
-            current=sizeof_fmt(print_info.current),
-            end=sizeof_fmt(print_info.end),
-            filesize=size_str,
-            speed=sizeof_fmt(speed),
-            eta=remain_time)
+        print_msg = 'tid:{} {} [{}/{}] {}/s eta:{:.2f}s'.format(
+            threadid,
+            progress_bar,
+            sizeof_fmt(print_info.current),
+            sizeof_fmt(file_bytes),
+            sizeof_fmt(speed),
+            remain_time)
 
         return print_msg
 
