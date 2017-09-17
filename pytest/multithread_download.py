@@ -1,8 +1,12 @@
+import operator
 import threading
+from cmath import isclose
 from collections import namedtuple
+from datetime import datetime
 from queue import Queue
 
 import requests
+import sys
 
 DOWNLOAD_URL = r'http://sw.bos.baidu.com/sw-search-sp/software/0f1809fc9bd9d/BaiduHi_setup.exe'
 THREAD_NUMS = 5
@@ -31,12 +35,70 @@ class PrintThread(threading.Thread):
         self.print_info_queue = print_info_queue
 
     def run(self):
+        self.begin_time = datetime.now()
+
         while True:
             print_info = self.print_info_queue.get()
-
-            print(print_info)
-
+            msg = self.generate_single_msg(print_info)
+            print_msg = self.combine_print_msg(msg, print_info.begin)
+            sys.stdout.write(print_msg)
+            sys.stdout.flush()
             self.print_info_queue.task_done()
+
+    # 通过文件下载起始点排序打印信息
+    msg_dict = {}
+
+    def combine_print_msg(self, msg, begin):
+        """
+        组合信息打印
+        :param msg: 单条打印信息
+        :param begin: 文件下载起始点,通过这个来排序打印位置
+        :return:
+        """
+        self.msg_dict[begin] = msg
+
+        sorted_msg_lst = sorted(self.msg_dict.values())
+
+        print_msg = '\r'
+
+        for value in sorted_msg_lst:
+            print_msg = print_msg + value + '\n'
+
+        return print_msg
+
+    def generate_single_msg(self, print_info):
+        """
+        生成单条打印信息
+        :param print_info: 通过print_info_queue传过来的下载信息
+        :return:
+        """
+        file_bytes = print_info.end - print_info.begin
+        size_str = sizeof_fmt(file_bytes)
+        remain_bytes = file_bytes - print_info.current
+        threadid = print_info.threadid
+        download_time = datetime.now() - self.begin_time
+        speed = print_info.current / download_time.seconds if download_time.seconds != 0 else 0
+        remain_time = remain_bytes / speed if speed != 0 else 0
+        progress_bar = self.generate_progress_bar(print_info.current / file_bytes)
+
+        print_msg = 'tid:{threadid} {progressbar} [{current}/{end}] {filesize} {speed}/s eta:{eta:.1f}s'.format(
+            threadid=threadid,
+            progressbar=progress_bar,
+            current=sizeof_fmt(print_info.current),
+            end=sizeof_fmt(print_info.end),
+            filesize=size_str,
+            speed=sizeof_fmt(speed),
+            eta=remain_time)
+
+        return print_msg
+
+    def generate_progress_bar(self, complete_ratio):
+        bar_max = 50
+        completed = '=' * int(bar_max * complete_ratio)
+        if not isclose(complete_ratio, 1.0):
+            completed = completed[:-1] + '>'
+        uncompleted = ' ' * (bar_max - len(completed))
+        return '{:.1%}[{}{}]'.format(complete_ratio, completed, uncompleted)
 
 
 class DownloadTask():
@@ -45,6 +107,8 @@ class DownloadTask():
         self.end = end
         self.url = url
         self.filename = filename
+
+        # 下载信息实时传递给打印信息队列
         self.print_info_queue = print_info_queue
 
     def run(self):
@@ -63,7 +127,7 @@ class DownloadTask():
                 current_bytes += len(data)
 
                 prinf_info = PRINT_INFO(threadid=threading.get_ident(), begin=self.begin,
-                                       end=self.end, current=current_bytes)
+                                        end=self.end, current=current_bytes)
                 self.print_info_queue.put(prinf_info)
 
 
