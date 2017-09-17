@@ -71,7 +71,7 @@ def main():
 
     queue = Queue()
 
-    for _ in range(5):
+    for _ in range(THREAD_NUMS):
         t = DownloadThread(queue)
         t.setDaemon(True)
         t.start()
