@@ -31,7 +31,7 @@ class DownLoadTask():
         self.filename = filename
 
     def run(self):
-        print('id:{} begin: {} end: {}'.format(threading.get_ident(), self.begin, self.end))
+        #print('id:{} begin: {} end: {}'.format(threading.get_ident(), self.begin, self.end))
 
         headers = {'Range': 'bytes={}-{}'.format(self.begin, self.end)}
 
