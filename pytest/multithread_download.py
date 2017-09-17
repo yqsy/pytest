@@ -79,8 +79,8 @@ class PrintThread(threading.Thread):
         print_msg = 'tid:{} {} [{}/{}] {}/s eta:{:.2f}s'.format(
             threadid,
             progress_bar,
-            sizeof_fmt(print_info.current + print_info.begin),
-            sizeof_fmt(print_info.end),
+            print_info.current + print_info.begin,
+            print_info.end,
             sizeof_fmt(speed),
             remain_time)
 
@@ -108,7 +108,8 @@ class DownloadTask():
     def run(self):
         print('id:{} begin: {} end: {}'.format(threading.get_ident(), self.begin, self.end))
 
-        headers = {'Range': 'bytes={}-{}'.format(self.begin, self.end)}
+        # 这里是 first-last
+        headers = {'Range': 'bytes={}-{}'.format(self.begin, self.end - 1)}
 
         r = requests.get(self.url, headers=headers, stream=True)
 
