@@ -1,4 +1,4 @@
-import operator
+import sys
 import threading
 from cmath import isclose
 from collections import namedtuple
@@ -6,13 +6,12 @@ from datetime import datetime
 from queue import Queue
 
 import requests
-import sys
 
 DOWNLOAD_URL = r'http://sw.bos.baidu.com/sw-search-sp/software/0f1809fc9bd9d/BaiduHi_setup.exe'
 THREAD_NUMS = 5
 DWONLOAD_TO_FILE = r'D:/reference/tmp/BaiduHi_setup.exe'
 
-PRINT_INFO = namedtuple('PRINT_INFO', 'threadid begin end current')
+PrintInfo = namedtuple('PRINT_INFO', 'threadid begin end current')
 
 
 class DownloadThread(threading.Thread):
@@ -68,11 +67,11 @@ class PrintThread(threading.Thread):
         :return:
         """
         file_bytes = print_info.end - print_info.begin
-        size_str = sizeof_fmt(file_bytes)
         remain_bytes = file_bytes - print_info.current
         threadid = print_info.threadid
         download_time = datetime.now() - self.begin_time
-        speed = int(print_info.current / download_time.seconds if download_time.seconds != 0 else 0.0)
+        speed = int(print_info.current / download_time.seconds
+                    if download_time.seconds != 0 else 0.0)
         remain_time = remain_bytes / speed if speed != 0 else 0.0
         progress_bar = self.generate_progress_bar(print_info.current / file_bytes)
 
@@ -121,8 +120,8 @@ class DownloadTask():
                 fp.write(data)
                 current_bytes += len(data)
 
-                prinf_info = PRINT_INFO(threadid=threading.get_ident(), begin=self.begin,
-                                        end=self.end, current=current_bytes)
+                prinf_info = PrintInfo(threadid=threading.get_ident(), begin=self.begin,
+                                       end=self.end, current=current_bytes)
                 self.print_info_queue.put(prinf_info)
 
 
