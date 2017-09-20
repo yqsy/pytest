@@ -105,6 +105,7 @@ def main4():
     # 传这个异常就有问题
     # exc_coro.throw(Exception)
 
+
 def demo_finally():
     print('-> coroutine started')
     try:
@@ -130,9 +131,34 @@ def main5():
     exc_core.throw(Exception)
 
 
+def gen1():
+    for c in 'AB':
+        yield c
+
+    for i in range(1, 3):
+        yield i
+
+
+def main6():
+    gen = gen1()
+    print(list(gen))
+
+
+def gen2():
+    yield from 'AB'
+    yield from range(1, 3)
+
+
+def main7():
+    gen = gen2()
+    print(list(gen))
+
+
 if __name__ == '__main__':
     # main1()
     # main2()
     # main3()
     # main4()
-    main5()
+    # main5()
+    # main6()
+    main7()
