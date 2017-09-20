@@ -42,6 +42,31 @@ def main2():
     # my_coro2.send(29)
 
 
+def averager():
+    total = 0.0
+    count = 0
+    average = None
+    while True:
+        term = yield average
+        total += term
+        count += 1
+        average = total / count
+
+
+def main3():
+    coro_avg = averager()
+
+    # 取第一个average,让协程函数等待在term = yield
+    print(next(coro_avg))
+
+    # 赋值term,并来到下一个yield,取出来average
+    print(coro_avg.send(10))
+    print(coro_avg.send(20))
+    print(coro_avg.send(30))
+
+
+
 if __name__ == '__main__':
     # main1()
-    main2()
+    # main2()
+    main3()
