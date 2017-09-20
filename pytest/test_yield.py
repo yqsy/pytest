@@ -105,9 +105,34 @@ def main4():
     # 传这个异常就有问题
     # exc_coro.throw(Exception)
 
+def demo_finally():
+    print('-> coroutine started')
+    try:
+        while True:
+            try:
+                x = yield
+            except DemoException:
+                print('*** DemoException handled. Continuing...')
+            else:
+                print('-> coroutine received: {!r}'.format(x))
+    finally:
+        print('-> coroutine ending')
+
+
+def main5():
+    exc_core = demo_finally()
+
+    next(exc_core)
+
+    exc_core.send(11)
+    exc_core.throw(DemoException)
+
+    exc_core.throw(Exception)
+
 
 if __name__ == '__main__':
     # main1()
     # main2()
     # main3()
-    main4()
+    # main4()
+    main5()
