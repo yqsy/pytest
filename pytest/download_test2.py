@@ -8,7 +8,7 @@ MAX_WORKERS = 20
 
 def download_one(cc):
     image = get_flag(cc)
-    show(cc)
+    #show(cc)
     save_flag(image, cc)
     return cc
 
