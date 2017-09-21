@@ -1,3 +1,4 @@
 __pycache__
 /pytest/log.txt
 /.idea
+/pytest/downloads

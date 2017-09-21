@@ -10,6 +10,7 @@ CCS = ('CN ' * 1000)[:-1].split(' ')
 def download_many(cc_list):
     max_workers = min(len(cc_list), 20)
 
+    # 线程里面抛出异常呢???
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         to_do_map = {}
         for cc in sorted(cc_list):
