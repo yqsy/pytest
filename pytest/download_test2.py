@@ -16,6 +16,7 @@ def download_one(cc):
 def download_many(cc_list):
     workers = min(MAX_WORKERS, len(cc_list))
     with ThreadPoolExecutor(workers) as executor:
+        # res是一个生成器
         res = executor.map(download_one, sorted(cc_list))
 
     return len(list(res))
