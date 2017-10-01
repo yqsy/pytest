@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 
 from pytest.common import hello
 
-FORMAT = '%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d %(message)s'
+FORMAT = '%(asctime)s %(thread)d %(levelname)s %(filename)s:%(lineno)d:%(funcName)s %(message)s'
 
 logging.basicConfig(
     level=logging.DEBUG,
